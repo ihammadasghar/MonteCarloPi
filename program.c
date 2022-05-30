@@ -14,6 +14,7 @@ struct params{
 void run_simulation(int , int);
 int is_point_in_circle(float, float, int);
 void* generate_points(void*);
+float check_quality(float);
 
 
 int main() {
@@ -65,7 +66,8 @@ void run_simulation(int total_points, int threads){
 
     // Approximate pi
     float pi = 4.0 * ((float)inside/(float)total_points);
-    printf("Threads: %d\nTotal points: %d\nPoints inside: %d\nTime taken: %f\nPi approximation: %f\n\n", threads, total_points, inside, time_taken, pi);
+    float quality = check_quality(pi);
+    printf("Threads: %d\nTotal points: %d\nPoints inside: %d\nTime taken: %f\nQuality: %f\nPi approximation: %f\n\n", threads, total_points, inside, time_taken, quality, pi);
 }
 
 
@@ -92,4 +94,14 @@ int is_point_in_circle(float x, float y, int r){
         return 1;
     }
     return 0;
+}
+
+
+float check_quality(float approx_pi){
+    float PI = 3.141592;
+    float quality = (approx_pi*((float)100)/PI);
+    if(quality > (float)100){
+        quality -= quality - (float)100; 
+    }
+    return quality;
 }
