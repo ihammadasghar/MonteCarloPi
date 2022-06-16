@@ -20,6 +20,7 @@ int main() {
     int total_points[] = {20000, 100000, 1000000, 10000000};
     int threads[] = {2, 4, 6, 8};
 
+    printf("------------------------------------------------------------------------------------------\n\n");
     for(int i = 0; i < 4; i++){
         simulate(total_points[i], threads[i], radius);
     }
@@ -32,7 +33,7 @@ int main() {
 void simulate(int total_points, int threads, int radius){
     clock_t begin = clock();
 
-    int a = 2*radius;
+    int a = 2*radius; // One side of the square
 
     pthread_t* ids = malloc(threads * sizeof(pthread_t));
     int points_inside[threads];
@@ -50,17 +51,18 @@ void simulate(int total_points, int threads, int radius){
         pthread_join(ids[i], NULL);
     }
 
-    int sum = 0;
+    int total_points_inside = 0;
     for(int i = 0; i < threads; i++){
-        sum += points_inside[i];
+        total_points_inside += points_inside[i];
     }
 
-    float pi = 4.0 * ((float)sum/(float)total_points);
+    float pi = 4.0 * ((float)total_points_inside/(float)total_points);
 
     clock_t end = clock();
     float acc = accuracy(pi);
     double time_taken = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Total points: %d\nThreads: %d\nTime taken: %f\nApproximation of pi: %f with an accuracy of %f%%\n\n", total_points, threads, time_taken,pi, acc);
+    printf("Generated points: %d\nPoints in circle: %d\nThreads: %d\nTime taken: %f\nActual Pi: 3.141592\nApproximation: %f\nAccuracy: %f%%\n\n", total_points, total_points_inside, threads, time_taken,pi, acc);
+    printf("------------------------------------------------------------------------------------------\n\n");
 }
 
 void* monte_carlo(void* props){
